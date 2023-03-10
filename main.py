@@ -1,11 +1,35 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from typing import List
 from model import Article, ArticleUpdateRequest
 from uuid import UUID, uuid4
 from http.client import HTTPException
-
+import mysql.connector
 
 app = FastAPI()
+
+MYSQL_DATABASE_URL = "mysql+mysqlconnector://{user}:{password}@{host}/{database}"
+
+db_config = {
+    "host": "localhost",
+    "user": "root",
+    "password": "password",
+    "database": "mydatabase"
+}
+
+cnx = mysql.connector.connect(**db_config)
+
+cursor = cnx.cursor()
+
+
+def get_db():
+    cnx = mysql.connector.connect(**db_config)
+    cursor = cnx.cursor()
+    try:
+        yield cursor
+    finally:
+        cursor.close()
+        cnx.close()
+
 
 db: List[Article] = [
     Article(id=uuid4(), designation="Article-01",
