@@ -3,6 +3,8 @@ from typing import List, Optional, Dict, Union
 from fastapi import FastAPI, Response
 from pydantic import BaseModel
 import mysql.connector
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 
 class UserModel(BaseModel):
@@ -21,7 +23,8 @@ class User:
         result = cursor.fetchone()
         if result is None:
             return None
-        user = {"id": result[0], "firstname": result[1], "lastname": result[2], "address": result[3], "date_create": result[4], "date_update": result[5]}
+        user = {"id": result[0], "firstname": result[1], "lastname": result[2], "address": result[3],
+                "date_create": result[4], "date_update": result[5]}
         return user
 
     def get_all_users(self) -> List[Dict]:
@@ -30,7 +33,8 @@ class User:
         results = cursor.fetchall()
         users = []
         for result in results:
-            user = {"id": result[0], "firstname": result[1], "lastname": result[2], "address": result[3], "date_create": result[4], "date_update": result[5]}
+            user = {"id": result[0], "firstname": result[1], "lastname": result[2], "address": result[3],
+                    "date_create": result[4], "date_update": result[5]}
             users.append(user)
         return users
 
@@ -72,6 +76,15 @@ db = mysql.connector.connect(
     database="python_db"
 )
 user = User(db)
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 def formatter(status: bool, message: str, data: Optional[Union[Dict, List]]) -> Dict:
@@ -134,11 +147,10 @@ async def update_user_by_id(id: int, user_req: UserModel, response: Response):
 @app.post("/api/v1/users")
 async def add_user(user: UserModel, response: Response):
     try:
-        User(db).add_user(user)
+
         new_user = User(db).get_user_by_id(User(db).add_user(user))
         response.status_code = 201
         return formatter(True, "User added successfully", new_user)
     except:
         response.status_code = 500
         return formatter(False, "Internal Server Error", None)
-
