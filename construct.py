@@ -9,8 +9,6 @@ class UserModel(BaseModel):
     firstname: str
     lastname: str
     address: str
-    date_create: Optional[datetime] = None
-    date_update: Optional[datetime] = None
 
 
 class User:
@@ -120,9 +118,9 @@ async def delete_user_by_id(id: int, response: Response):
 
 
 @app.put("/api/v1/users/{id}")
-async def update_user_by_id(id: int, user: UserModel, response: Response):
+async def update_user_by_id(id: int, user_req: UserModel, response: Response):
     try:
-        updated_user = user.update_user(id, user)
+        updated_user = user.update_user(id, user_req)
         if not updated_user:
             response.status_code = 404
             return formatter(False, "User not found", None)
