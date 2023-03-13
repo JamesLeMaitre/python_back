@@ -96,7 +96,7 @@ async def get_all_users(response: Response):
     try:
         users = user.get_all_users()
         if not users:
-            response.status_code = 404
+            response.status_code = 201
             return formatter(False, "No users found", None)
         response.status_code = 200
         return formatter(True, "Users retrieved successfully", users)

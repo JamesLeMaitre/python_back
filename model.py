@@ -2,6 +2,11 @@ import string
 from typing import Optional
 from uuid import UUID, uuid4
 from pydantic import BaseModel, Field
+from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy.orm import relationship
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
 
 
 class Article(BaseModel):
@@ -30,3 +35,4 @@ class UserModel(BaseModel):
     firstname: str
     lastname: str
     address: str
+
