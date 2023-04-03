@@ -1,6 +1,6 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 from typing import List
-from model import Article, ArticleUpdateRequest
+from app.models import Article, ArticleUpdateRequest
 from uuid import UUID, uuid4
 from http.client import HTTPException
 import mysql.connector

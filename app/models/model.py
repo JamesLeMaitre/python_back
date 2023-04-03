@@ -1,9 +1,8 @@
-import string
+from datetime import datetime
 from typing import Optional
 from uuid import UUID, uuid4
+
 from pydantic import BaseModel, Field
-from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -24,15 +23,11 @@ class ArticleUpdateRequest(BaseModel):
     qpc: Optional[int]
 
 
-class Users(BaseModel):
-    id: int
-    firstname: str
-    lastname: str
-    address: str
-
-
 class UserModel(BaseModel):
     firstname: str
     lastname: str
     address: str
+    date_create: Optional[datetime] = None
+    date_update: Optional[datetime] = None
+
 
